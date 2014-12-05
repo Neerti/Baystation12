@@ -338,6 +338,8 @@ datum/preferences
 				organ_name = "heart"
 			if("eyes")
 				organ_name = "eyes"
+			if("brain")
+				organ_name = "brain"
 
 		if(status == "cyborg")
 			++ind
@@ -1391,7 +1393,7 @@ datum/preferences
 							if(third_limb && organ_data[third_limb] == "amputated")
 								organ_data[third_limb] = null
 				if("organs")
-					var/organ_name = input(user, "Which internal function do you want to change?") as null|anything in list("Heart", "Eyes")
+					var/organ_name = input(user, "Which internal function do you want to change?") as null|anything in list("Heart", "Eyes", "Brain")
 					if(!organ_name) return
 
 					var/organ = null
@@ -1400,6 +1402,8 @@ datum/preferences
 							organ = "heart"
 						if("Eyes")
 							organ = "eyes"
+						if("Brain")
+							organ = "brain"
 
 					var/new_state = input(user, "What state do you wish the organ to be in?") as null|anything in list("Normal","Assisted","Mechanical")
 					if(!new_state) return
