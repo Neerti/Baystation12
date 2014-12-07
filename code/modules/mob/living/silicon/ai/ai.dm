@@ -56,6 +56,9 @@ var/list/ai_verbs_default = list(
 	var/obj/item/device/multitool/aiMulti = null
 	var/obj/item/device/radio/headset/heads/ai_integrated/aiRadio = null
 	var/custom_sprite = 0 //For our custom sprites
+	var/decon_lock = 1 //Access is required to begin deconstruction of the core
+	var/obj/item/device/mmi/brain = new /obj/item/device/mmi
+
 //Hud stuff
 
 	//MALFUNCTION
@@ -764,6 +767,31 @@ var/list/ai_verbs_default = list(
 			user.visible_message("\blue \The [user] finishes fastening down \the [src]!")
 			anchored = 1
 			return
+	else if(istype(W, /obj/item/weapon/card/id))
+		var/obj/item/weapon/card/id/card = W
+		if(access_ai_upload in card.GetAccess())
+			if(decon_lock == 1)
+				user.visible_message("<span class='notice'>[user] has unlocked the core's maintenance protocols.</span>")
+			else
+				user.visible_message("<span class='notice'>[user] has locked the core's maintenance protocols.</span>")
+			decon_lock = !decon_lock
+		else
+			user << ("<span class='warning'>Access denied.</span>")
+	else if(istype(W, /obj/item/weapon/screwdriver))
+		if(decon_lock)
+			user << ("<span class='warning'>There appears to be a cover blocking the screws. There is an ID scanner nearby.</span>")
+		else
+			user.visible_message("<span class='notice'>[user] begins unscrewing the glass from [src].</span>")
+			playsound(loc, 'sound/items/Screwdriver.ogg', 50, 1)
+			if(!do_after(user,40))
+				user.visible_message("<span class='notice'>[user] has stopped unscrewing the core.</span>")
+				return
+			user.visible_message("<span class='notice'>[user] finishes unscrewing [src]'s glass panel open, disabling the core.</span>")
+
+			var/obj/structure/AIcore/core = new /obj/structure/AIcore(src.loc)
+			core.transfer_ai(src,core)
+			del(src)
+
 	else
 		return ..()
 
