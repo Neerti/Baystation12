@@ -39,7 +39,7 @@
 	anchored = 1
 	use_power = 1
 	idle_power_usage = 80
-	active_power_usage = 1000 //For heating/cooling rooms. 1000 joules equates to about 1 degree every 2 seconds for a single tile of air.
+	active_power_usage = 1000 //For heating/cooling rooms. 1000 joules equates to about 1 degree every 2 seconds for a single tile of air at level 1 power.
 	power_channel = ENVIRON
 	req_one_access = list(access_atmospherics, access_engine_equip)
 	var/alarm_id = null
@@ -65,6 +65,9 @@
 
 	var/target_temperature = T0C+20
 	var/regulating_temperature = 0
+	var/max_target_temperature = 40
+	var/min_target_temperature = 0
+	var/temperature_regulator_level = 1 //Can be set from 1 to 5.  Higher = more power used
 
 	var/datum/radio_frequency/radio_connection
 
@@ -79,6 +82,8 @@
 	var/other_dangerlevel = 0
 
 	var/report_danger_level = 1
+
+	var/interface_mode = 0 //nanoUI menu
 
 /obj/machinery/alarm/monitor
 	report_danger_level = 0
@@ -146,8 +151,8 @@
 	TLV["carbon dioxide"] = list(-1.0, -1.0, 5, 10) // Partial pressure, kpa
 	TLV["phoron"] =			list(-1.0, -1.0, 0.2, 0.5) // Partial pressure, kpa
 	TLV["other"] =			list(-1.0, -1.0, 0.5, 1.0) // Partial pressure, kpa
-	TLV["pressure"] =		list(ONE_ATMOSPHERE*0.80,ONE_ATMOSPHERE*0.90,ONE_ATMOSPHERE*1.10,ONE_ATMOSPHERE*1.20) /* kpa */
-	TLV["temperature"] =	list(T0C-26, T0C, T0C+40, T0C+66) // K
+	TLV["pressure"] =		list(80,90,110,120) /* kpa */
+	TLV["temperature"] =	list(250, 275, 310, 340) // K
 
 
 /obj/machinery/alarm/initialize()
@@ -468,13 +473,14 @@
 	frequency.post_signal(src, alert_signal)
 
 /obj/machinery/alarm/attack_ai(mob/user)
-	return interact(user)
+	return ui_interact(user)
 
 /obj/machinery/alarm/attack_hand(mob/user)
 	. = ..()
 	if (.)
 		return
-	return interact(user)
+	ui_interact(user)
+	//return interact(user)
 
 /obj/machinery/alarm/interact(mob/user)
 	user.set_machine(src)
@@ -798,12 +804,9 @@ table tr:first-child th:first-child { border: none;}
 				return
 
 	if(href_list["temperature"])
-		var/list/selected = TLV["temperature"]
-		var/max_temperature = min(selected[3] - T0C, MAX_TEMPERATURE)
-		var/min_temperature = max(selected[2] - T0C, MIN_TEMPERATURE)
-		var/input_temperature = input("What temperature would you like the system to mantain? (Capped between [min_temperature]C and [max_temperature]C)", "Thermostat Controls") as num|null
-		if(!input_temperature || input_temperature > max_temperature || input_temperature < min_temperature)
-			usr << "Temperature must be between [min_temperature]C and [max_temperature]C"
+		var/input_temperature = input("What temperature would you like the system to mantain? (Capped between [min_target_temperature]C and [max_target_temperature]C)", "Thermostat Controls") as num|null
+		if(!input_temperature || input_temperature > max_target_temperature || input_temperature < min_target_temperature)
+			usr << "Temperature must be between [min_target_temperature]C and [max_target_temperature]C"
 		else
 			target_temperature = input_temperature + T0C
 
@@ -899,8 +902,57 @@ table tr:first-child th:first-child { border: none;}
 			mode = text2num(href_list["mode"])
 			apply_mode()
 
-	if(!nowindow)
-		updateUsrDialog()
+		if(href_list["lock"])
+			if(istype(usr, /mob/living/silicon))
+				var/n = text2num(href_list["lock"])
+				switch(n)
+					if(1)
+						locked = 1
+					else
+						locked = 0
+
+		if(href_list["choice"]) //NanoUI menu selection
+			var/n = text2num(href_list["choice"])
+			interface_mode = n
+
+		if(href_list["set_power_level"])
+			var/n = text2num(href_list["set_power_level"])
+			temperature_regulator_level = n
+			switch(n)
+				if(1)
+					active_power_usage = 1000
+				if(2)
+					active_power_usage = 2000
+				if(3)
+					active_power_usage = 4000
+				if(4)
+					active_power_usage = 8000
+				if(5)
+					active_power_usage = 16000
+		if(href_list["set_max_temp"])
+			var/input_var = input("What temperature would you like the system to never exceed? The current cap is [max_target_temperature]C.  The system will also not exceed sensor settings.", "Thermostat Configuration") as num|null
+			if(!input_var)
+				usr << "A number must be inserted."
+			else
+				max_target_temperature = input_var
+
+		if(href_list["set_min_temp"])
+			var/input_var = input("What temperature would you like the system to never go below? The current cap is [min_target_temperature]C.  The system will also not go below sensor settings.", "Thermostat Configuration") as num|null
+			if(!input_var)
+				usr << "A number must be inserted."
+			else
+				min_target_temperature = input_var
+
+		if(href_list["set_sensor_report"])
+			var/n = text2num(href_list["set_sensor_report"])
+			switch(n)
+				if(0)
+					report_danger_level = 0
+				if(1)
+					report_danger_level = 1
+
+	//if(!nowindow)
+	//	updateUsrDialog()
 
 
 /obj/machinery/alarm/attackby(obj/item/W as obj, mob/user as mob)
@@ -1303,7 +1355,7 @@ FIRE ALARM
 /obj/machinery/firealarm/proc/delayed_reset()
 	var/area/A = get_area(src)
 	if (!A) return
-	
+
 	src = null
 	spawn(600)
 		A.firereset()

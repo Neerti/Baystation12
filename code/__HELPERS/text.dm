@@ -74,7 +74,7 @@
 /proc/stripped_input(var/mob/user, var/message = "", var/title = "", var/default = "", var/max_length=MAX_MESSAGE_LEN)
 	var/name = input(user, message, title, default)
 	return strip_html_properly(name, max_length)
-    
+
 // Used to get a trimmed, properly sanitized input, of max_length
 /proc/trim_strip_input(var/mob/user, var/message = "", var/title = "", var/default = "", var/max_length=MAX_MESSAGE_LEN)
 	return trim(stripped_input(user, message, title, default, max_length))
@@ -346,3 +346,17 @@ proc/TextPreview(var/string,var/len=40)
 	if(C && (C.prefs.toggles & CHAT_NOICONS))
 		return tagdesc
 	return "<IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='[tagname]'" + (tagdesc ? " alt='[tagdesc]'" : "") + ">"
+
+proc/formatNumber(e, dp)
+	if(!isnum(e) || !isnum(dp) || dp < 0) return
+	var/k = "[round(e, 10**-dp)]"
+	var/index = findtext(k, ".")
+	var/sci = findtext(k, "e")
+	if(index)
+		var/dplen = dp ? dp+1 : 0
+		if(sci)
+			return copytext(k, 1, min(index+dplen, sci)) + copytext(k, sci)
+		else
+			return copytext(k, 1, index+dplen)
+	else
+		return k
