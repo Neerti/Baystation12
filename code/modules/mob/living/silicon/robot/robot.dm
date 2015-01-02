@@ -337,6 +337,11 @@ var/list/robot_verbs_default = list(
 			module_sprites["Combat Android"] = "droid-combat"
 			module.channels = list("Security" = 1)
 
+		if("Hydroponics")
+			module = new /obj/item/weapon/robot_module/hydroponics(src)
+			module.channels = list("Service" = 1)
+			module_sprites["Drone"] = "drone-hydro"
+
 	//languages
 	module.add_languages(src)
 

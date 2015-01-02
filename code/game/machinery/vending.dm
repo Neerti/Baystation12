@@ -392,7 +392,7 @@
 	if ((usr.contents.Find(src) || (in_range(src, usr) && istype(src.loc, /turf))))
 		usr.set_machine(src)
 		if ((href_list["vend"]) && (src.vend_ready) && (!currently_vending))
-
+			/* //No reason to deny synthetics, assuming the end product is free anyways.
 			if(istype(usr,/mob/living/silicon))
 				if(istype(usr,/mob/living/silicon/robot))
 					var/mob/living/silicon/robot/R = usr
@@ -402,7 +402,7 @@
 				else
 					usr << "\red The vending machine refuses to interface with you, as you are not in its target demographic!"
 					return
-
+			*/
 			if((!allowed(usr)) && !emagged && scan_id)	//For SECURE VENDING MACHINES YEAH
 				usr << "<span class='warning'>Access denied.</span>"	//Unless emagged of course
 				flick(icon_deny,src)

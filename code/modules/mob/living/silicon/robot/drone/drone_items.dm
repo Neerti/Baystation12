@@ -30,6 +30,9 @@
 
 // VEEEEERY limited version for mining borgs. Basically only for swapping cells and upgrading the drills.
 /obj/item/weapon/gripper/miner
+	name = "drill maintainence gripper"
+	desc = "A simple grasping tool for the maintenance of mining drills."
+
 	can_hold = list(
 	/obj/item/weapon/cell,
 	/obj/item/weapon/stock_parts
@@ -38,14 +41,40 @@
 /obj/item/weapon/gripper/paperwork
 	name = "paperwork gripper"
 	desc = "A simple grasping tool for clerical work."
-	icon = 'icons/obj/device.dmi'
-	icon_state = "gripper"
 
 	can_hold = list(
 		/obj/item/weapon/clipboard,
 		/obj/item/weapon/paper,
 		/obj/item/weapon/paper_bundle,
-		/obj/item/weapon/card/id
+		/obj/item/weapon/card/id,
+		/obj/item/weapon/book/
+		)
+
+/obj/item/weapon/gripper/chemistry
+	name = "chemistry gripper"
+	desc = "A simple grasping tool for handling chemicals."
+
+	can_hold = list(
+		/obj/item/weapon/reagent_containers/glass/beaker,
+		/obj/item/weapon/reagent_containers/glass/bottle,
+		/obj/item/weapon/reagent_containers/pill
+		)
+
+/obj/item/weapon/gripper/culinary
+	name = "culinary gripper"
+	desc = "A simple grasping tool to assist in the creation of edible matter for organic crew."
+
+	can_hold = list(
+		/obj/item/weapon/reagent_containers/food
+		)
+
+/obj/item/weapon/gripper/hydroponics
+	name = "plant gripper"
+	desc = "A simple grasping tool for cultivating plants."
+
+	can_hold = list(
+		/obj/item/seeds/,
+		/obj/item/weapon/grown
 		)
 
 /obj/item/weapon/gripper/attack_self(mob/user as mob)

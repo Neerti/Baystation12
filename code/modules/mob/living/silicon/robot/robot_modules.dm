@@ -134,6 +134,7 @@
 	src.modules += new /obj/item/weapon/reagent_containers/robodropper(src)
 	src.modules += new /obj/item/weapon/reagent_containers/syringe(src)
 	src.modules += new /obj/item/weapon/extinguisher/mini(src)
+	src.modules += new /obj/item/weapon/gripper/chemistry(src)
 	src.emag = new /obj/item/weapon/reagent_containers/spray(src)
 	src.emag.reagents.add_reagent("pacid", 250)
 	src.emag.name = "Polyacid spray"
@@ -280,6 +281,7 @@
 
 	src.modules += new /obj/item/weapon/tray/robotray(src)
 	src.modules += new /obj/item/weapon/reagent_containers/food/drinks/shaker(src)
+	src.modules += new /obj/item/weapon/gripper/culinary(src)
 	src.emag = new /obj/item/weapon/reagent_containers/food/drinks/cans/beer(src)
 
 	var/datum/reagents/R = new/datum/reagents(50)
@@ -309,6 +311,7 @@
 	src.modules += new /obj/item/weapon/pen/robopen(src)
 	src.modules += new /obj/item/weapon/form_printer(src)
 	src.modules += new /obj/item/weapon/gripper/paperwork(src)
+	src.modules += new /obj/item/weapon/hand_labeler(src)
 	src.emag = new /obj/item/weapon/stamp/denied(src)
 
 /obj/item/weapon/robot_module/clerical/add_languages(var/mob/living/silicon/robot/R)
@@ -344,6 +347,19 @@
 	src.modules += new /obj/item/weapon/mining_scanner(src)
 	src.modules += new /obj/item/weapon/crowbar(src)
 	src.emag = new /obj/item/weapon/pickaxe/plasmacutter(src)
+	return
+
+/obj/item/weapon/robot_module/hydroponics
+	name = "hydroponics robot module"
+
+/obj/item/weapon/robot_module/hydroponics/New()
+	..()
+	src.modules += new /obj/item/device/flash(src)
+	src.modules += new /obj/item/weapon/gripper/hydroponics(src)
+	src.modules += new /obj/item/device/analyzer/plant_analyzer(src)
+	src.modules += new /obj/item/weapon/minihoe(src)
+	src.modules += new /obj/item/weapon/hatchet(src)
+	src.modules += new /obj/item/weapon/storage/bag/plants(src)
 	return
 
 /obj/item/weapon/robot_module/syndicate
