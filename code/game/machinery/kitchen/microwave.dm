@@ -18,6 +18,13 @@
 	var/global/list/acceptable_reagents // List of the reagents you can put in
 	var/global/max_n_of_items = 0
 
+/obj/machinery/cooktop
+	name = "hotplate"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "hotplate"
+
+/obj/machinery/cooktop/New()
+	if(prob(80)) overlays += new /image('icons/obj/kitchen.dmi', "hotplate_on", pick(cardinal))
 
 // see code/modules/food/recipes_microwave.dm for recipes
 

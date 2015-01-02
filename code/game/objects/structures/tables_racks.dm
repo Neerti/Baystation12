@@ -16,22 +16,35 @@
 	var/flipped = 0
 	var/health = 100
 
+/obj/structure/table/bench
+	name = "kitchen bench"
+	desc = "A granite-topped kitchen counter."
+	flipped = 0
+	health = 250
+	parts = null
+	icon_state = "bench"
+
+/obj/structure/table/bench/bar
+	icon_state = "bar"
+	name = "bar"
+	desc = "A handsomely polished hardwood bar."
+
 /obj/structure/table/woodentable
 	name = "wooden table"
 	desc = "Do not apply fire to this. Rumour says it burns easily."
-	icon_state = "wood_table"
+	icon_state = "wood"
 	parts = /obj/item/weapon/table_parts/wood
 	health = 50
 
 /obj/structure/table/gamblingtable
 	name = "gambling table"
 	desc = "A curved wooden table with a thin carpet of green fabric."
-	icon_state = "gamble_table"
+	icon_state = "gamble"
 	parts = /obj/item/weapon/table_parts/gambling
 	health = 50
 
 /obj/structure/table/reinforced
-	icon_state = "reinf_table"
+	icon_state = "rtable"
 	health = 200
 	parts = /obj/item/weapon/table_parts/reinforced
 
@@ -69,7 +82,7 @@
 
 /obj/structure/table/update_icon()
 
-	if(health > 100)
+	if(health > 100 && health <= 200)
 		name = "reinforced [initial(name)]"
 
 	spawn(2) //So it properly updates when deleting
@@ -82,11 +95,7 @@
 				if (T && T.flipped == 1 && T.dir == src.dir)
 					type++
 					tabledirs |= direction
-			var/base = "table"
-			if (istype(src, /obj/structure/table/woodentable))
-				base = "wood"
-			if (istype(src, /obj/structure/table/reinforced))
-				base = "rtable"
+			var/base = "[initial(icon_state)]"
 
 			icon_state = "[base]flip[type]"
 			if (type==1)
@@ -212,70 +221,21 @@
 		if(dir_sum%16 == 15)
 			table_type = 4 //4-way intersection, the 'middle' table sprites will be used.
 
-		if(istype(src,/obj/structure/table/reinforced))
-			switch(table_type)
-				if(0)
-					icon_state = "reinf_table"
-				if(1)
-					icon_state = "reinf_1tileendtable"
-				if(2)
-					icon_state = "reinf_1tilethick"
-				if(3)
-					icon_state = "reinf_tabledir"
-				if(4)
-					icon_state = "reinf_middle"
-				if(5)
-					icon_state = "reinf_tabledir2"
-				if(6)
-					icon_state = "reinf_tabledir3"
-		else if(istype(src,/obj/structure/table/woodentable))
-			switch(table_type)
-				if(0)
-					icon_state = "wood_table"
-				if(1)
-					icon_state = "wood_1tileendtable"
-				if(2)
-					icon_state = "wood_1tilethick"
-				if(3)
-					icon_state = "wood_tabledir"
-				if(4)
-					icon_state = "wood_middle"
-				if(5)
-					icon_state = "wood_tabledir2"
-				if(6)
-					icon_state = "wood_tabledir3"
-		else if(istype(src,/obj/structure/table/gamblingtable))
-			switch(table_type)
-				if(0)
-					icon_state = "gamble_table"
-				if(1)
-					icon_state = "gamble_1tileendtable"
-				if(2)
-					icon_state = "gamble_1tilethick"
-				if(3)
-					icon_state = "gamble_tabledir"
-				if(4)
-					icon_state = "gamble_middle"
-				if(5)
-					icon_state = "gamble_tabledir2"
-				if(6)
-					icon_state = "gamble_tabledir3"
-		else
-			switch(table_type)
-				if(0)
-					icon_state = "table"
-				if(1)
-					icon_state = "table_1tileendtable"
-				if(2)
-					icon_state = "table_1tilethick"
-				if(3)
-					icon_state = "tabledir"
-				if(4)
-					icon_state = "table_middle"
-				if(5)
-					icon_state = "tabledir2"
-				if(6)
-					icon_state = "tabledir3"
+		switch(table_type)
+			if(0)
+				icon_state = "[initial(icon_state)]"
+			if(1)
+				icon_state = "[initial(icon_state)]_1tileendtable"
+			if(2)
+				icon_state = "[initial(icon_state)]_1tilethick"
+			if(3)
+				icon_state = "[initial(icon_state)]dir"
+			if(4)
+				icon_state = "[initial(icon_state)]_middle"
+			if(5)
+				icon_state = "[initial(icon_state)]dir2"
+			if(6)
+				icon_state = "[initial(icon_state)]dir3"
 		if (dir_sum in list(1,2,4,8,5,6,9,10))
 			set_dir(dir_sum)
 		else
@@ -393,6 +353,9 @@
 	if (istype(W, /obj/item/weapon/weldingtool))
 		var/obj/item/weapon/weldingtool/WT = W
 		if(WT.isOn())
+			if(initial(health)>200)
+				user << "<span class='notice'>This table cannot be weakened.</span>"
+				return
 			if(initial(health)>100)
 				if(WT.remove_fuel(0, user))
 					if(src.health>100)
