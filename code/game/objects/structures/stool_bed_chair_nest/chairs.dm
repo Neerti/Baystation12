@@ -100,10 +100,9 @@
 	var/image/armrest = null
 
 /obj/structure/stool/bed/chair/comfy/New()
-	armrest = image("icons/obj/objects.dmi", "comfychair_armrest")
+	..()
+	armrest = image('icons/obj/objects.dmi', src, "comfychair_armrest")
 	armrest.layer = MOB_LAYER + 0.1
-
-	return ..()
 
 /obj/structure/stool/bed/chair/comfy/afterbuckle()
 	if(buckled_mob)

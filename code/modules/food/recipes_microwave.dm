@@ -319,7 +319,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesecake
-
+/*
 /datum/recipe/plaincake
 	reagents = list("milk" = 5, "sugar" = 15)
 	items = list(
@@ -328,7 +328,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/dough,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/sliceable/plaincake
-
+*/
 /datum/recipe/meatpie
 	items = list(
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough,

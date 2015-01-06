@@ -1,5 +1,6 @@
 /* Kitchen tools
  * Contains:
+ *		Containers
  *		Utensils
  *		Spoons
  *		Forks
@@ -12,6 +13,86 @@
 
 /obj/item/weapon/kitchen
 	icon = 'icons/obj/kitchen.dmi'
+
+/*
+ * Containers
+ */
+
+/obj/item/weapon/reagent_containers/kitchen
+	icon = 'icons/obj/kitchen.dmi'
+	force = 3
+	throwforce = 3
+	w_class = 2
+
+	var/heat = 0 	//How hot the container is, which is used to determine if cooking was successful.
+					//At prolonged amounts of heat, the contents of the container are converted into the finished food,
+					//and for simplicity's sake, the heat of the pan is reset, as processing the pan cooling down is unneccessary.
+					//It is complete arbitrary.
+	var/time_to_finish = 100 //ticks
+					//This determines when the contents are converted into the food.
+					//When it reaches zero, it calculates the current heat level, to determine success.
+					//Also arbitrary.
+	var/result_path = null
+					//The type of food to come out when finish() is called and all conditions are met.
+					//Each container is specialized to make a specific 'type' of food, such as pizza, cake, pie, etc.
+					//Depending on the contents of the container, you can make different kinds of pizza/cake/whatever, with just one path
+					//For example, if a majority of the contents are apple, and there's also some banana in, you'd get a cake named 'apple banana pie'.
+
+/obj/item/weapon/reagent_containers/kitchen/proc/finish()
+	world << "DING DONG FINISHED!"
+	world << "The heat level was [heat]."
+	reset_self()
+	//todo: make converting the food here.
+
+/obj/item/weapon/reagent_containers/kitchen/proc/reset_self()
+	time_to_finish = initial(time_to_finish)
+	heat = initial(heat)
+	return
+
+/obj/item/weapon/reagent_containers/kitchen/attackby(var/obj/item/O as obj, var/mob/user as mob) //Put things inside
+	if(istype(O, /obj/item/weapon/reagent_containers/food/snacks/))
+		user.visible_message(\
+			"<span class='notice'>[user] has added \the [O] to [src].</span>", \
+			"<span class='notice'>You add \the [O] to [src].</span>")
+		user.drop_item()
+		O.loc = src //Put it in
+		if(contents.len >= 1)
+			icon_state = icon_state + "-full"
+		reset_self()
+	else
+		//user << "You don't think you could make anything useful with \the [O]."
+		..()
+
+/obj/item/weapon/reagent_containers/kitchen/attack_self(var/mob/user as mob) //Take things out
+	for(var/obj/O in contents)
+		O.loc = user.loc
+	reagents.clear_reagents()
+	user << "<span class='notice'>You tip the [src] upside-down.</span>"
+	icon_state = initial(icon_state)
+	reset_self()
+	..()
+
+
+/obj/item/weapon/reagent_containers/kitchen/cakepan
+	name = "cake pan"
+	desc = "It's a pan used for baking cakes."
+	icon_state = "cakepan"
+	result_path = /obj/item/weapon/reagent_containers/food/snacks/sliceable/cake
+
+/obj/item/weapon/reagent_containers/kitchen/piepan
+	name = "pie pan"
+	desc = "A pan used for making delicious pie.  Baking of pi not recommended."
+	icon_state = "piepan"
+
+/obj/item/weapon/reagent_containers/kitchen/souppan
+	name = "soup pan"
+	desc = "Used for boiling stews and soups."
+	icon_state = "souppan"
+
+/obj/item/weapon/reagent_containers/kitchen/bakingtray //distinct from the tray used to carry food.
+	name = "baking tray"
+	desc = "A tray used to bake things from bread to pizza, and everything inbetween."
+	icon_state = "bakingtray"
 
 /*
  * Utensils
@@ -97,14 +178,14 @@
 	edge = 1
 
 	suicide_act(mob/user)
-		viewers(user) << pick("\red <b>[user] is slitting \his wrists with the [src.name]! It looks like \he's trying to commit suicide.</b>", \
-							"\red <b>[user] is slitting \his throat with the [src.name]! It looks like \he's trying to commit suicide.</b>", \
-							"\red <b>[user] is slitting \his stomach open with the [src.name]! It looks like \he's trying to commit seppuku.</b>")
+		viewers(user) << pick("<span class='danger'>[user] is slitting \his wrists with the [src.name]! It looks like \he's trying to commit suicide.</span>", \
+							"<span class='danger'>[user] is slitting \his throat with the [src.name]! It looks like \he's trying to commit suicide.</span>", \
+							"<span class='danger'>[user] is slitting \his stomach open with the [src.name]! It looks like \he's trying to commit seppuku.</span>")
 		return (BRUTELOSS)
 
 /obj/item/weapon/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))
-		user << "\red You accidentally cut yourself with the [src]."
+		user << "<span class='danger'>You accidentally cut yourself with the [src].</span>"
 		user.take_organ_damage(20)
 		return
 	playsound(loc, 'sound/weapons/bladeslice.ogg', 50, 1, -1)
@@ -121,7 +202,7 @@
 
 /obj/item/weapon/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))
-		user << "\red You somehow managed to cut yourself with the [src]."
+		user << "<span class='danger'>You somehow managed to cut yourself with the [src].</span>"
 		user.take_organ_damage(20)
 		return
 	playsound(loc, 'sound/weapons/bladeslice.ogg', 50, 1, -1)
@@ -148,9 +229,9 @@
 	attack_verb = list("slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 
 	suicide_act(mob/user)
-		viewers(user) << pick("\red <b>[user] is slitting \his wrists with the [src.name]! It looks like \he's trying to commit suicide.</b>", \
-							"\red <b>[user] is slitting \his throat with the [src.name]! It looks like \he's trying to commit suicide.</b>", \
-							"\red <b>[user] is slitting \his stomach open with the [src.name]! It looks like \he's trying to commit seppuku.</b>")
+		viewers(user) << pick("<span class='danger'>[user] is slitting \his wrists with the [src.name]! It looks like \he's trying to commit suicide.</span>", \
+							"<span class='danger'>[user] is slitting \his throat with the [src.name]! It looks like \he's trying to commit suicide.</span>", \
+							"<span class='danger'>[user] is slitting \his stomach open with the [src.name]! It looks like \he's trying to commit seppuku.</span>")
 		return (BRUTELOSS)
 
 /obj/item/weapon/kitchenknife/ritual
@@ -200,7 +281,7 @@
 
 /obj/item/weapon/kitchen/rollingpin/attack(mob/living/M as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))
-		user << "\red The [src] slips out of your hand and hits your head."
+		user << "<span class='danger'>The [src] slips out of your hand and hits your head.</span>"
 		user.take_organ_damage(10)
 		user.Paralyse(2)
 		return
@@ -216,7 +297,7 @@
 			if (H.stat < 2 && H.health < 50 && prob(90))
 				// ******* Check
 				if (istype(H, /obj/item/clothing/head) && H.flags & 8 && prob(80))
-					H << "\red The helmet protects you from being hit hard in the head!"
+					H << "<span class='danger'>The helmet protects you from being hit hard in the head!</span>"
 					return
 				var/time = rand(2, 6)
 				if (prob(75))
@@ -224,10 +305,10 @@
 				else
 					H.Stun(time)
 				if(H.stat != 2)	H.stat = 1
-				user.visible_message("\red <B>[H] has been knocked unconscious!</B>", "\red <B>You knock [H] unconscious!</B>")
+				user.visible_message("<span class='danger'><B>[H] has been knocked unconscious!</span>", "<span class='danger'>You knock [H] unconscious!</span>")
 				return
 			else
-				H.visible_message("\red [user] tried to knock [H] unconscious!", "\red [user] tried to knock you unconscious!")
+				H.visible_message("<span class='danger'>[user] tried to knock [H] unconscious!</span>", "<span class='danger'>[user] tried to knock you unconscious!</span>")
 				H.eye_blurry += 3
 	return ..()
 
@@ -282,7 +363,7 @@
 
 
 	if((CLUMSY in user.mutations) && prob(50))              //What if he's a clown?
-		M << "\red You accidentally slam yourself with the [src]!"
+		M << "<span class='danger'>You accidentally slam yourself with the [src]!</span>"
 		M.Weaken(1)
 		user.take_organ_damage(2)
 		if(prob(50))
