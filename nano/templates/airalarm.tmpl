@@ -1,0 +1,253 @@
+<div class='notice'>
+	{{if data.IsSynthetic}}
+		<div class="itemContentSmall">
+			Interface Lock:
+		</div>
+		<div class="itemContentFull">
+			{{:helper.link('Engaged', 'locked', {'lock' : 1}, data.locked ? 'selected' : null)}}
+			{{:helper.link('Disengaged', 'unlocked', {'lock' : 0},data.locked ? null : 'selected')}}
+		</div>
+		<div class="clearBoth"></div>
+	{{else}}
+		{{if !data.locked}}
+			Swipe an ID card to lock this interface
+		{{else}}
+			Swipe an ID card to unlock this interface
+		{{/if}}
+	{{/if}}
+</div>
+<h3>Air Status</h3>
+<div class="item">
+	<div class="itemLabel">
+		<b>Pressure</b>:
+	</div>
+	<div class="itemContent">
+		{{:data.Pressure}} kPa
+	</div>
+</div>
+<div class="item">
+	<div class="itemLabel">
+		<b>Oxygen</b>:
+	</div>
+	<div class="itemContent">
+		{{:data.O2}} %
+	</div>
+</div>
+<div class="item">
+	<div class="itemLabel">
+		<b>Carbon dioxide</b>:
+	</div>
+	<div class="itemContent">
+		{{:data.CO2}} %
+	</div>
+</div>
+<div class="item">
+	<div class="itemLabel">
+		<b>Phoron</b>:
+	</div>
+	<div class="itemContent">
+		{{:data.Phoron}} %
+	</div>
+</div>
+<div class="item">
+	<div class="itemLabel">
+		<b>Temperature</b>:
+	</div>
+	<div class="itemContent">
+		{{:data.Temperature}} K ( {{:data.TemperatureCelsius}} C )
+	</div>
+</div>
+<div class="item">
+	<div class="itemLabel">
+		<b>Local Status</b>:
+	</div>
+	<div class="itemContent">
+		{{if data.LocalStatus == 2}}
+			<span class="bad">DANGER: Internals Required</span>
+		{{else data.LocalStatus == 1}}
+			<span class="average">Caution</span>
+		{{else}}
+			<span class="good">Optimal</span>
+		{{/if}}
+	</div>
+</div>
+<div class="item">
+	<div class="itemLabel">
+		<b>Area Status</b>:
+	</div>
+	<div class="itemContent">
+		{{if data.AreaStatus == 1}}
+			<span class="average">Atmos alert in area</span>
+		{{else}}
+			<span class="good">No alerts</span>
+		{{/if}}
+	</div>
+</div>
+<hr>
+<div class="item">
+	<div class="itemLabel">
+		<b>Thermostat:</b>
+	</div>
+	<div class="itemContent">
+		{{:helper.link(data.Thermostat + "K ( " + data.ThermostatCelsius + " C )", 'gear', {'temperature' : 1}, null, 'fixedLeftWide')}}
+	</div>
+	<div class="itemLabel">
+		<b>Remote Control:</b>
+	</div>
+	<div class="itemContent">
+		{{:helper.link('Off', null, {'rcon' : "1"}, null,(data.rconSetting ==  1)? 'selected' : null)}}
+		{{:helper.link('Auto', null, {'rcon' : "2"}, null,(data.rconSetting ==  2)? 'selected' : null)}}
+		{{:helper.link('On', null, {'rcon' : "3"}, null,(data.rconSetting ==  3)? 'selected' : null)}}
+	</div>
+	<div class="itemLabel">
+		<b>Alarms</b>:
+	</div>
+	<div class="itemContent">
+		{{:helper.link('Clear Alarm', 'check', {'atmos_reset' : "1"}, null, null)}}
+		{{:helper.link('Trigger Alarm', 'alert', {'atmos_alarm' : "1"}, null, 'yellowButton')}}
+	</div>
+</div>
+<hr>
+{{if !data.locked}}
+	<h3>System Interface</h3>
+	<div class="item">
+		<div class="itemContent">
+			{{:helper.link('Return', 'arrowreturn-1-w', {'choice' : "0"}, null, 'fixedLeftWide')}}
+		</div>
+	</div>
+	{{if data.Mode == 0}} <!-- Hub -->
+		<div class="item">
+			<div class="itemContent">
+				{{:helper.link('Scrubber Control', 'gear', {'choice' : "1"}, null, 'fixedLeftWide')}}
+				{{:helper.link('Vent Control', 'gear', {'choice' : "2"}, null, 'fixedLeftWide')}}
+				{{:helper.link('Enviromental Mode', 'gear', {'choice' : "3"}, null, 'fixedLeftWide')}}
+				{{:helper.link('Sensor Configuration', 'gear', {'choice' : "4"}, null, 'fixedLeftWide')}}
+				{{:helper.link('Temp. Regulator', 'gear', {'choice' : "5"}, null, 'fixedLeftWide')}}
+			</div>
+			<div class="item"Content">
+				{{:helper.link('Begin Panic Syphon', 'alert', {'panic' : "1"}, null, 'redButton')}}
+			</div>
+		</div>
+	{{else data.Mode == 1}} <!-- Scrubbers -->
+		<div class="item">
+			<div class="itemContent">
+				<h5>Scrubber Control</h5>
+			</div>
+		</div>
+	{{else data.Mode == 2}} <!-- Vents -->
+	<h5>Vent Control</h5>
+		<div class="item">
+			<div class="itemContent">
+				{{for data.ventInfo}}
+					<div style="height: 26">
+					{{:value}} 
+					</div>
+                {{/for}}
+			</div>
+		</div>
+	{{else data.Mode == 3}} <!-- Environmentals -->
+		<div class="item">
+		<h5>Enviromnental Control</h5>
+			<div class="itemContent">{{:helper.link('Filtering', 'gear', {'mode' : "1"}, null, (data.enviromentMode ==  1)? 'selected' : null)}}</div>
+			<div class="itemContent">{{:helper.link('Replace Air', 'gear', {'mode' : "2"}, null, (data.enviromentMode ==  2)? 'selected' : null)}}</div>
+			<div class="itemContent">{{:helper.link('Panic', 'alert',{'mode' : "3"}, null, (data.enviromentMode ==  3)? 'selected' : null)}}</div>
+			<div class="itemContent">{{:helper.link('Cycle', 'alert', {'mode' : "4"}, null, (data.enviromentMode ==  4)? 'selected' : null)}}</div>
+			<div class="itemContent">{{:helper.link('Fill', 'gear', {'mode' : "5"}, null, (data.enviromentMode ==  5)? 'selected' : null)}}</div>
+			<div class="itemContent">{{:helper.link('Off', 'gear', {'mode' : "6"}, null, (data.enviromentMode ==  6)? 'selected' : null)}}</div>
+		</div>
+	{{else data.Mode == 4}} <!-- Sensors -->
+		<div class="item">
+			<div class="itemContent">
+				<h5>Sensor Control</h5>
+				<div class="itemLabelWide">
+					Sensor Alert System:
+				</div>
+				<div class="itemContent">		
+					{{:helper.link('On', 'power', {'set_sensor_report' :  1}, (data.isSensorsOn ==  1)? 'selected' : null)}}
+					{{:helper.link('Off', 'alert', {'set_sensor_report' :  0}, (data.isSensorsOn ==  0)? 'selected' : null)}}
+				</div>
+			</div>
+		</div>
+		<b>Sensor Thresholds</b>
+        <div style="width: 315px; text-align: center">
+            <div style="float: left">
+                <div class="white" style="height: 26"></div>
+                <div class="bad" style="height: 26">Low Alert</div>
+				<div class="average" style="height: 26">Low Warn</div>
+				<div class="average" style="height: 26">High Warn</div>
+				<div class="bad" style="height: 26">High Alert</div>
+            </div>
+            <div style="float: left">
+                <div class="white" style="height: 26">O2</div>
+                {{for data.oxygenSensors}}
+					<div style="height: 26">
+					{{:helper.link(value, null, {'command' : 'switch_mode', 'mode' : 'in', 'dir' : value.dir}, null,null)}}
+					</div>
+                {{/for}}
+            </div>
+            <div style="float: left; margin-left: 10">
+                <div class="white" style="height: 26">CO2</div>
+                {{for data.carbonDioxideSensors}}
+					<div style="height: 26">
+					{{:helper.link(value, null, {'command' : 'switch_mode', 'mode' : 'in', 'dir' : value.dir}, null,null)}}
+					</div>
+                {{/for}}
+            </div>
+            <div style="float: left; margin-left: 10">
+                <div class="white" style="height: 26">Phoron</div>
+                {{for data.phoronSensors}}
+					<div style="height: 26">
+					{{:helper.link(value, null, {'command' : 'switch_mode', 'mode' : 'in', 'dir' : value.dir}, null,null)}}
+					</div>
+                {{/for}}
+            </div>
+            <div style="float: left; margin-left: 10">
+                <div class="white" style="height: 26">kPa</div>
+                {{for data.pressureSensors}}
+					<div style="height: 26">
+					{{:helper.link(value, null, {'command' : 'switch_mode', 'mode' : 'in', 'dir' : value.dir}, null,null)}}
+					</div>
+                {{/for}}
+            </div>
+            <div style="float: left; margin-left: 10">
+                <div class="white" style="height: 26">Temp</div>
+                {{for data.temperatureSensors}}
+					<div style="height: 26">
+					{{:helper.link(value, null, {'command' : 'switch_mode', 'mode' : 'in', 'dir' : value.dir}, null,null)}}
+					</div>
+                {{/for}}
+            </div>
+		</div>
+	{{else data.Mode == 5}} <!-- Temperature -->
+		<div class="item">
+		<h5>Temperature Control</h5>
+			<div class="itemContent">
+				<div class="itemLabel">
+					Power Level: 
+				</div>
+				<div class="itemContent">		
+					{{:helper.link('1', null, {'set_power_level' :  1}, (data.powerSetting ==  1)? 'selected' : null)}}
+					{{:helper.link('2', null, {'set_power_level' :  2}, (data.powerSetting ==  2)? 'selected' : null)}}
+					{{:helper.link('3', null, {'set_power_level' :  3}, (data.powerSetting ==  3)? 'selected' : null)}}
+					{{:helper.link('4', null, {'set_power_level' :  4}, (data.powerSetting ==  4)? 'selected' : null)}}
+					{{:helper.link('5', null, {'set_power_level' :  5}, (data.powerSetting ==  5)? 'selected' : null)}}
+				</div>
+				<div class="itemLabel">
+					Power Load: 
+				</div>
+				<div class="itemContent">
+					{{:data.powerDraw}} W
+				</div>
+				<div class="itemLabel">
+					Limiter:
+				</div>
+				<div class="itemContent">		
+					{{:helper.link('Min', 'wrench', {'set_min_temp' :  1}, null)}}
+					{{:helper.link('Max', 'wrench', {'set_max_temp' :  1}, null)}}
+				</div>
+			</div>
+		</div>
+	{{/if}}
+{{/if}}
+
+		
