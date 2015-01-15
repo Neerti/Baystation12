@@ -296,7 +296,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/meat/human,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/soylentgreen
-
+/*
 /datum/recipe/carrotcake
 	reagents = list("milk" = 5, "sugar" = 15)
 	items = list(
@@ -319,7 +319,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/cheesewedge,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesecake
-/*
+
 /datum/recipe/plaincake
 	reagents = list("milk" = 5, "sugar" = 15)
 	items = list(
@@ -713,7 +713,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/carpmeat,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/fishandchips
-
+/*
 /datum/recipe/birthdaycake
 	reagents = list("milk" = 5, "sugar" = 5)
 	items = list(
@@ -723,7 +723,7 @@ I said no!
 		/obj/item/clothing/head/cakehat
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/sliceable/birthdaycake
-
+*/
 /datum/recipe/bread
 	items = list(
 		/obj/item/weapon/reagent_containers/food/snacks/dough,
@@ -897,7 +897,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/applepie
-
+/*
 /datum/recipe/applecake
 	reagents = list("milk" = 5, "sugar" = 5)
 	items = list(
@@ -908,7 +908,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/sliceable/applecake
-
+*/
 /datum/recipe/slimeburger
 	reagents = list("slimejelly" = 5)
 	items = list(
@@ -946,7 +946,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/breadslice,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/jellysandwich/cherry
-
+/*
 /datum/recipe/orangecake
 	reagents = list("milk" = 5)
 	items = list(
@@ -1002,7 +1002,7 @@ I said no!
 		/obj/item/weapon/reagent_containers/food/snacks/chocolatebar,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/sliceable/chocolatecake
-
+*/
 /datum/recipe/bloodsoup
 	reagents = list("blood" = 10)
 	items = list(
@@ -1022,7 +1022,7 @@ I said no!
 		/obj/item/slime_extract,
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/boiledslimecore
-
+/*
 /datum/recipe/braincake
 	reagents = list("milk" = 5)
 	items = list(
@@ -1035,7 +1035,7 @@ I said no!
 		/obj/item/organ/brain
 	)
 	result = /obj/item/weapon/reagent_containers/food/snacks/sliceable/braincake
-
+*/
 /datum/recipe/chocolateegg
 	items = list(
 		/obj/item/weapon/reagent_containers/food/snacks/egg,

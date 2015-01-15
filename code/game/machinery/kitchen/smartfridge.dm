@@ -121,6 +121,40 @@
 	if(istype(O,/obj/item/weapon/reagent_containers/glass) || istype(O,/obj/item/weapon/reagent_containers/food/drinks) || istype(O,/obj/item/weapon/reagent_containers/food/condiment))
 		return 1
 
+/obj/machinery/smartfridge/prestocked
+	name = "\improper Smart Fridge Plus"
+	desc = "An upgraded version of the standard Smart Fridge, this version is capable of holding a huge array of foods and cooking aids."
+
+/obj/machinery/smartfridge/prestocked/accept_check(var/obj/item/O as obj)
+	if(istype(O,/obj/item/weapon/reagent_containers/food) || istype(O,/obj/item/weapon/reagent_containers/kitchen) || istype(O,/obj/item/weapon/reagent_containers/glass))
+		return 1
+
+/obj/machinery/smartfridge/prestocked/New()
+	..()
+	for(var/i = 0, i < 5, i++)
+		new /obj/item/weapon/reagent_containers/food/drinks/milk(src)
+	for(var/i = 0, i < 3, i++)
+		new /obj/item/weapon/reagent_containers/food/drinks/soymilk(src)
+	for(var/i = 0, i < 2, i++)
+		new /obj/item/weapon/storage/fancy/egg_box(src)
+	for(var/i = 0, i < 4, i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/meat(src)
+	for(var/i = 0, i < 6, i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/flour(src)
+	new /obj/item/weapon/reagent_containers/food/condiment/sugar(src)
+	new /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel(src)
+	new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
+	new /obj/item/weapon/reagent_containers/kitchen/cakepan(src)
+	new /obj/item/weapon/reagent_containers/kitchen/souppan(src)
+	new /obj/item/weapon/reagent_containers/kitchen/piepan(src)
+	new /obj/item/weapon/reagent_containers/kitchen/fryingpan(src)
+	for(var/obj/O in src) //This is needed so the items show up on the UI.
+		if(item_quants[O.name])
+			item_quants[O.name]++
+		else
+			item_quants[O.name] = 1
+	return
+
 /obj/machinery/smartfridge/process()
 	if(!src.ispowered)
 		return

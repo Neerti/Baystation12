@@ -1,6 +1,5 @@
 /* Kitchen tools
  * Contains:
- *		Containers
  *		Utensils
  *		Spoons
  *		Forks
@@ -13,86 +12,6 @@
 
 /obj/item/weapon/kitchen
 	icon = 'icons/obj/kitchen.dmi'
-
-/*
- * Containers
- */
-
-/obj/item/weapon/reagent_containers/kitchen
-	icon = 'icons/obj/kitchen.dmi'
-	force = 3
-	throwforce = 3
-	w_class = 2
-
-	var/heat = 0 	//How hot the container is, which is used to determine if cooking was successful.
-					//At prolonged amounts of heat, the contents of the container are converted into the finished food,
-					//and for simplicity's sake, the heat of the pan is reset, as processing the pan cooling down is unneccessary.
-					//It is complete arbitrary.
-	var/time_to_finish = 100 //ticks
-					//This determines when the contents are converted into the food.
-					//When it reaches zero, it calculates the current heat level, to determine success.
-					//Also arbitrary.
-	var/result_path = null
-					//The type of food to come out when finish() is called and all conditions are met.
-					//Each container is specialized to make a specific 'type' of food, such as pizza, cake, pie, etc.
-					//Depending on the contents of the container, you can make different kinds of pizza/cake/whatever, with just one path
-					//For example, if a majority of the contents are apple, and there's also some banana in, you'd get a cake named 'apple banana pie'.
-
-/obj/item/weapon/reagent_containers/kitchen/proc/finish()
-	world << "DING DONG FINISHED!"
-	world << "The heat level was [heat]."
-	reset_self()
-	//todo: make converting the food here.
-
-/obj/item/weapon/reagent_containers/kitchen/proc/reset_self()
-	time_to_finish = initial(time_to_finish)
-	heat = initial(heat)
-	return
-
-/obj/item/weapon/reagent_containers/kitchen/attackby(var/obj/item/O as obj, var/mob/user as mob) //Put things inside
-	if(istype(O, /obj/item/weapon/reagent_containers/food/snacks/))
-		user.visible_message(\
-			"<span class='notice'>[user] has added \the [O] to [src].</span>", \
-			"<span class='notice'>You add \the [O] to [src].</span>")
-		user.drop_item()
-		O.loc = src //Put it in
-		if(contents.len >= 1)
-			icon_state = icon_state + "-full"
-		reset_self()
-	else
-		//user << "You don't think you could make anything useful with \the [O]."
-		..()
-
-/obj/item/weapon/reagent_containers/kitchen/attack_self(var/mob/user as mob) //Take things out
-	for(var/obj/O in contents)
-		O.loc = user.loc
-	reagents.clear_reagents()
-	user << "<span class='notice'>You tip the [src] upside-down.</span>"
-	icon_state = initial(icon_state)
-	reset_self()
-	..()
-
-
-/obj/item/weapon/reagent_containers/kitchen/cakepan
-	name = "cake pan"
-	desc = "It's a pan used for baking cakes."
-	icon_state = "cakepan"
-	result_path = /obj/item/weapon/reagent_containers/food/snacks/sliceable/cake
-
-/obj/item/weapon/reagent_containers/kitchen/piepan
-	name = "pie pan"
-	desc = "A pan used for making delicious pie.  Baking of pi not recommended."
-	icon_state = "piepan"
-
-/obj/item/weapon/reagent_containers/kitchen/souppan
-	name = "soup pan"
-	desc = "Used for boiling stews and soups."
-	icon_state = "souppan"
-
-/obj/item/weapon/reagent_containers/kitchen/bakingtray //distinct from the tray used to carry food.
-	name = "baking tray"
-	desc = "A tray used to bake things from bread to pizza, and everything inbetween."
-	icon_state = "bakingtray"
 
 /*
  * Utensils

@@ -69,6 +69,7 @@
 			switch(temperature)
 				if(0 to 60) //C.  Don't bother doing anything if it's lower.
 					return
+				/*
 				if(61 to 110) //C
 					food_inside.heat++
 				if(111 to 160) //C
@@ -77,6 +78,9 @@
 					food_inside.heat += 5.0
 				if(211 to 260) //C
 					food_inside.heat += 10.0
+				*/
+				if(60 to INFINITY)
+					food_inside.heat += (temperature - 60) * 0.1
 			food_inside.time_to_finish -= 1.0
 			if(food_inside.time_to_finish == 0)
 				food_inside.finish()

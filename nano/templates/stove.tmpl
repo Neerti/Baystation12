@@ -1,0 +1,19 @@
+<div class="item">
+	<div class="itemLabel">
+		Power:
+	</div>
+	<div class="itemContent">		
+		{{:helper.link('On', 'power', {'togglePower' : 1}, data.on ? 'selected' : null)}}{{:helper.link('Off', 'close', {'togglePower' : 1}, data.on ? null : 'selected')}}
+	</div>
+</div>
+<h3>Contents</h3>
+<div class="item">
+	<div class="itemLabelNarrow">
+		Stove top:
+	</div>
+		{{for data.contents}}
+			<div style="height: 26">
+			{{:helper.link(value, null, {'command' : 'switch_mode', 'mode' : 'in', 'dir' : value.dir}, null,null)}}
+			</div>
+		{{/for}}
+</div>

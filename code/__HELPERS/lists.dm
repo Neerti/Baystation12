@@ -581,3 +581,11 @@ datum/proc/dd_SortValue()
 
 /obj/machinery/dd_SortValue()
 	return "[sanitize(name)]"
+
+/proc/get_max_index(list/assoc)
+    var/max_val = 0
+    . = null
+    for(var/index in assoc)
+        if(assoc[index] > max_val)
+            max_val = assoc[index]
+            . = index
