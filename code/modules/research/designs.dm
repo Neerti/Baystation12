@@ -699,6 +699,41 @@ datum/design/item/mecha/generator_nuclear
 	req_tech = list("powerstorage"= 3, "engineering" = 3, "materials" = 3)
 	build_path = /obj/item/mecha_parts/mecha_equipment/generator/nuclear
 
+////////////////////////////////////////
+////////////Robot Upgrade Parts/////////
+////////////////////////////////////////
+
+datum/design/item/robot_component
+	build_type = MECHFAB || PROTOLATHE
+	category = "Robot"
+
+datum/design/item/mecha/AssembleDesignName()
+	..()
+	name = "Robotic component design ([item_name])"
+
+datum/design/item/robot_component/armour
+	name = "Armour Plating"
+	desc = "Basic plating used to protect a robot's more fragile components."
+	id = "component_armour"
+	req_tech = list("materials" = 1)
+	materials = list("$iron" = 11250)
+	build_path = /obj/item/robot_parts/robot_component/armour
+
+datum/design/item/robot_component/armour/adv
+	name = "Reinforced Armour Plating"
+	desc = "A more robust and resilient plating for robots."
+	id = "component_armour_adv"
+	req_tech = list("materials" = 4, "engineering" = 3)
+	materials = list("$iron" = 18750)
+	build_path = /obj/item/robot_parts/robot_component/armour/adv
+
+datum/design/item/robot_component/armour/super
+	name = "Powered Armour Plating"
+	desc = "An experimental hull plating for robots which utilizes rare materials for extra strength, and incorporates a miniaturized shield generator."
+	id = "component_armour_super"
+	req_tech = list("materials" = 7, "engineering" = 4, "magnets" = 4, "combat" = 5, "power_storage" = 4)
+	materials = list("$iron" = 56250, "$uranium" = 13750, "$diamond" = 3750 )
+	build_path = /obj/item/robot_parts/robot_component/armour/super
 
 ////////////////////////////////////////
 //////////Disk Construction Disks///////

@@ -71,12 +71,23 @@
 
 // ARMOUR
 // Protects the cyborg from damage. Usually first module to be hit
-// No power usage
+// No power usage for the first two types.
 /datum/robot_component/armour
 	name = "armour plating"
 	external_type = /obj/item/robot_parts/robot_component/armour
 	max_damage = 60
 
+/datum/robot_component/armour/adv
+	name = "reinforced armor plating"
+	external_type = /obj/item/robot_parts/robot_component/armour/adv
+	max_damage = 80
+
+/datum/robot_component/armour/super
+	name = "powered armor plating"
+	external_type = /obj/item/robot_parts/robot_component/armour/super
+	idle_usage = 50
+	max_damage = 100
+	var/shield_power = 50
 
 // ACTUATOR
 // Enables movement.
@@ -233,10 +244,24 @@
 	icon_state = "motor"
 	icon_state_broken = "motor_broken"
 
+//*Armour*
+
 /obj/item/robot_parts/robot_component/armour
 	name = "armour plating"
 	icon_state = "armor"
 	icon_state_broken = "armor_broken"
+
+/obj/item/robot_parts/robot_component/armour/adv
+	name = "reinforced armour plating"
+	icon_state = "armor"
+	icon_state_broken = "armor_broken"
+
+/obj/item/robot_parts/robot_component/armour/super
+	name = "powered armour plating"
+	icon_state = "armor"
+	icon_state_broken = "armor_broken"
+
+//*Camera*
 
 /obj/item/robot_parts/robot_component/camera
 	name = "camera"
