@@ -296,10 +296,10 @@
 	src.in_throw_mode = 1
 	if(src.throw_icon)
 		src.throw_icon.icon_state = "act_throw_on"
-
+/*
 /mob/proc/throw_item(atom/target)
 	return
-
+*/
 /mob/living/carbon/throw_item(atom/target)
 	src.throw_mode_off()
 	if(usr.stat || !target)

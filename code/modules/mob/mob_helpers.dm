@@ -4,6 +4,21 @@
 		return 1
 	return 0
 
+/proc/ishumanoid(A)
+	if(istype(A, /mob/living/humanoid))
+		return 1
+	return 0
+
+/proc/isbiological(A)
+	if(istype(A, /mob/living/humanoid/biological))
+		return 1
+	return 0
+
+/proc/issynthetic(A)
+	if(istype(A, /mob/living/humanoid/synthetic))
+		return 1
+	return 0
+
 /proc/isalien(A)
 	if(istype(A, /mob/living/carbon/alien))
 		return 1
@@ -257,7 +272,7 @@ var/list/global/organ_rel_size = list(
 		for(var/obj/item/weapon/grab/G in target.grabbed_by)
 			if(G.state >= GRAB_AGGRESSIVE)
 				return zone
-	
+
 	var/miss_chance = 10
 	if (zone in base_miss_chance)
 		miss_chance = base_miss_chance[zone]

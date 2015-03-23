@@ -4,8 +4,8 @@
 	TODO: Proper documentation
 	icon_key is [species.race_key][g][husk][fat][hulk][skeleton][s_tone]
 */
-var/global/list/human_icon_cache = list()
-var/global/list/light_overlay_cache = list()
+// var/global/list/human_icon_cache = list()
+// var/global/list/light_overlay_cache = list()
 
 	///////////////////////
 	//UPDATE_ICONS SYSTEM//
@@ -105,6 +105,7 @@ Please contact me on #coderbus IRC. ~Carn x
 */
 
 //Human Overlays Indexes/////////
+
 #define MUTATIONS_LAYER			1
 #define DAMAGE_LAYER			2
 #define SURGERY_LEVEL			3		//bs12 specific.
@@ -174,16 +175,16 @@ Please contact me on #coderbus IRC. ~Carn x
 		M.Translate(0, 16*(size_multiplier-1))
 		src.transform = M
 
-var/global/list/damage_icon_parts = list()
-proc/get_damage_icon_part(damage_state, body_part)
-	if(damage_icon_parts["[damage_state]/[body_part]"] == null)
-		var/icon/DI = new /icon('icons/mob/dam_human.dmi', damage_state)			// the damage icon for whole human
+// var/global/list/damage_icon_parts = list()
+// proc/get_damage_icon_part(damage_state, body_part)
+//	if(damage_icon_parts["[damage_state]/[body_part]"] == null)
+//		var/icon/DI = new /icon('icons/mob/dam_human.dmi', damage_state)			// the damage icon for whole human
 		// TODO: Convert dam_human.dmi to greyscale and blend in species.blood_colour here.
-		DI.Blend(new /icon('icons/mob/dam_mask.dmi', body_part), ICON_MULTIPLY)		// mask with this organ's pixels
-		damage_icon_parts["[damage_state]/[body_part]"] = DI
-		return DI
-	else
-		return damage_icon_parts["[damage_state]/[body_part]"]
+//		DI.Blend(new /icon('icons/mob/dam_mask.dmi', body_part), ICON_MULTIPLY)		// mask with this organ's pixels
+//		damage_icon_parts["[damage_state]/[body_part]"] = DI
+//		return DI
+//	else
+//		return damage_icon_parts["[damage_state]/[body_part]"]
 
 //DAMAGE OVERLAYS
 //constructs damage icon for each organ from mask * damage field and saves it in our overlays_ lists
