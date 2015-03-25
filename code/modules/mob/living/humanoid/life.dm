@@ -32,3 +32,95 @@
 	var/temperature_alert = 0
 	var/in_stasis = 0
 	var/heartbeat = 0
+
+/mob/living/humanoid/Life()
+
+	set invisibility = 0
+	set background = 1
+
+	if (monkeyizing)	return
+	if(!loc)			return	// Fixing a null error that occurs when the mob isn't found in the world -- TLE
+
+	..()
+
+	//Apparently, the person who wrote this code designed it so that
+	//blinded get reset each cycle and then get activated later in the
+	//code. Very ugly. I dont care. Moving this stuff here so its easy
+	//to find it.
+	blinded = null
+	fire_alert = 0 //Reset this here, because both breathe() and handle_environment() have a chance to set it.
+
+	//TODO: seperate this out
+	// update the current life tick, can be used to e.g. only do something every 4 ticks
+	life_tick++
+//	var/datum/gas_mixture/environment = loc.return_air()
+
+	in_stasis = istype(loc, /obj/structure/closet/body_bag/cryobag) && loc:opened == 0
+	if(in_stasis) loc:used++
+
+	if(life_tick%30==15)
+		hud_updateflag = 1022
+
+	voice = GetVoice()
+
+	//No need to update all of these procs if the guy is dead.
+//	if(stat != DEAD && !in_stasis)
+//		if(air_master.current_cycle%4==2 || failed_last_breath || (health < config.health_threshold_crit)) 	//First, resolve location and get a breath
+//			breathe() 				//Only try to take a breath every 4 ticks, unless suffocating
+
+		//Updates the number of stored chemicals for powers
+//		handle_changeling() //bio?
+
+		//Mutations and radiation
+//		handle_mutations_and_radiation() //move to biological
+
+		//Chemicals in the body
+//		handle_chemicals_in_body() //move to biological
+
+		//Disabilities
+//		handle_disabilities() //move to biological
+
+		//Organs and blood
+//		handle_organs() //bio
+//		handle_blood() //bio
+//		stabilize_body_temperature() //Body temperature adjusts itself (self-regulation)
+
+		//Random events (vomiting etc)
+//		handle_random_events() //bio
+
+		//stuff in the stomach
+//		handle_stomach() //bio
+
+//		handle_shock() //bio
+
+//		handle_pain() //bio
+
+//		handle_medical_side_effects() //bio
+
+//		handle_heartbeat() //bio
+
+//	handle_stasis_bag()
+
+	if(life_tick > 5 && timeofdeath && (timeofdeath < 5 || world.time - timeofdeath > 6000))	//We are long dead, or we're junk mobs spawned like the clowns on the clown shuttle
+		return											//We go ahead and process them 5 times for HUD images and other stuff though.
+
+	//Handle temperature/pressure differences between body and environment
+//	handle_environment(environment)		//Optimized a good bit.
+
+	//Check if we're on fire
+//	handle_fire()
+
+	//Status updates, death etc.
+//	handle_regular_status_updates()		//Optimized a bit
+//	update_canmove()
+
+	//Update our name based on whether our face is obscured/disfigured
+	name = get_visible_name()
+
+	//handle_regular_hud_updates()
+
+//	pulse = handle_pulse()
+
+	// Grabbing
+	for(var/obj/item/weapon/grab/G in src)
+		G.process()

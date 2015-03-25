@@ -5,7 +5,6 @@
 	icon = 'icons/mob/human.dmi'
 	icon_state = "body_m_s"
 
-	var/list/hud_list[10]
 	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
 
 /mob/living/humanoid/biological/human/New(var/new_loc, var/new_species = null)
@@ -23,7 +22,7 @@
 	var/datum/reagents/R = new/datum/reagents(1000)
 	reagents = R
 	R.my_atom = src
-
+/*
 	hud_list[HEALTH_HUD]      = image('icons/mob/hud.dmi', src, "hudhealth100")
 	hud_list[STATUS_HUD]      = image('icons/mob/hud.dmi', src, "hudhealthy")
 	hud_list[LIFE_HUD]	      = image('icons/mob/hud.dmi', src, "hudhealthy")
@@ -34,7 +33,7 @@
 	hud_list[IMPTRACK_HUD]    = image('icons/mob/hud.dmi', src, "hudblank")
 	hud_list[SPECIALROLE_HUD] = image('icons/mob/hud.dmi', src, "hudblank")
 	hud_list[STATUS_HUD_OOC]  = image('icons/mob/hud.dmi', src, "hudhealthy")
-
+*/
 	..()
 
 	if(dna)
