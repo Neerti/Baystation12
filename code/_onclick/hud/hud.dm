@@ -122,8 +122,15 @@ var/list/global_huds = list(
 	var/hotkey_ui_hidden = 0	//This is to hide the buttons that can be used via hotkeys. (hotkeybuttons list of buttons)
 
 	var/obj/screen/lingchemdisplay
+
 	var/obj/screen/blobpwrdisplay
 	var/obj/screen/blobhealthdisplay
+
+	var/obj/screen/pilot_health
+	var/obj/screen/mecha_opened
+	var/obj/screen/mecha_sealed
+	var/obj/screen/mecha_battery
+
 	var/obj/screen/r_hand_hud_object
 	var/obj/screen/l_hand_hud_object
 	var/obj/screen/action_intent
@@ -249,6 +256,8 @@ datum/hud/New(mob/owner)
 		robot_hud()
 	else if(isobserver(mymob))
 		ghost_hud()
+	else if(ismecha(mymob))
+		mecha_hud()
 
 
 //Triggered when F12 is pressed (Unless someone changed something in the DMF)

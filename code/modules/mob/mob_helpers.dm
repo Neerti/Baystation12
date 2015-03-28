@@ -42,6 +42,16 @@
 		return 1
 	return 0
 
+/proc/isvehicle(A)
+	if(istype(A, /mob/vehicle))
+		return 1
+	return 0
+
+/proc/ismecha(A)
+	if(istype(A, /mob/vehicle/mecha))
+		return 1
+	return 0
+
 /proc/iscorgi(A)
 	if(istype(A, /mob/living/simple_animal/corgi))
 		return 1
