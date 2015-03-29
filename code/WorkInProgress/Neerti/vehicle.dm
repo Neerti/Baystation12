@@ -18,6 +18,10 @@
 
 	var/list/passenger_slots = null
 	var/max_passengers = 2
+
+	var/list/cargo = null
+	var/list/max_cargo = 10
+
 	var/obj/item/weapon/cell/cell
 	var/datum/effect/effect/system/spark_spread/spark_system = new
 	var/obj/item/device/radio/radio = null
@@ -29,10 +33,19 @@
 	//the values in this list show how much damage will pass through, not how much will be absorbed.
 	var/list/damage_absorption = list("brute"=0.8,"fire"=1.2,"bullet"=0.9,"laser"=1,"energy"=1,"bomb"=1)
 
+	var/wreckage = null //obj reference to spawn when the vehicle is destroyed.
+
 /mob/vehicle/New()
 	if(max_passengers)
 		passenger_slots = new/list()
+	if(max_cargo)
+		cargo = new/list()
 	..()
+
+/mob/vehicle/proc/on_pilot_entry()
+	open = 0
+	update_icons()
+	return
 
 /mob/vehicle/proc/can_act()
 	if(!pilot) //This shouldn't happen.
@@ -56,11 +69,16 @@
 		icon_state = icon_closed
 
 /mob/vehicle/Del()
-	if(pilot)
+	if(pilot) //Get the pilot out.
 		get_out(pilot,1)
-	for(var/mob/living/M in passenger_slots)
+	for(var/mob/living/M in passenger_slots) //Passengers too.
 		M.loc = get_turf(src)
-	..()
+	for(var/atom/movable/A in cargo) //Finally, the cargo.
+		A.loc = get_turf(src)
+	if(wreckage) //Spawn the wreckage, if one is available.
+		new wreckage(get_turf(src))
+		//TODO: Transfer attack logs, game logs, fingerprints, etc
+	..() //We can safely be deleted now.
 
 /mob/vehicle/proc/get_out(var/mob/user, var/forced = 0) //Since only the pilot can use this verb, no need to check for passengers.
 	if(pilot)
@@ -135,6 +153,7 @@
 			user.visible_message("<span class='notice'>[user] climbs into \the [src]</span>")
 			pilot = user
 			key = user.key
+			on_pilot_entry()
 		if(2) //Passenger
 			user.visible_message("<span class='notice'>[user] starts to climb into \the [src]'s passenger seat.</span>")
 			if(!do_after(user,40))

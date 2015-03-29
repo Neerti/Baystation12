@@ -20,7 +20,7 @@
 //Battery
 	mecha_battery = new /obj/screen()
 	mecha_battery.icon = 'icons/mob/screen1_mecha.dmi'
-	mecha_battery.icon_state = "power"
+	mecha_battery.icon_state = "charge"
 	mecha_battery.name = "battery charge"
 	mecha_battery.screen_loc = ui_mecha_battery
 
