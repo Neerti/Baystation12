@@ -45,6 +45,11 @@
 #define ui_borg_store "10,1:5"	//borgs
 #define ui_borg_inventory "6,1:5"//borgs
 
+#define ui_mecha_slot1 "7,1:5"			//mecha
+#define ui_mecha_slot2 "8,1:5"			//mecha
+#define ui_mecha_slot3 "9,1:5"			//mecha
+#define ui_mecha_slot4 "8,2:5"			//mecha
+
 #define ui_monkey_mask "5:14,1:5"	//monkey
 #define ui_monkey_back "6:14,1:5"	//monkey
 

@@ -1,4 +1,4 @@
-/mob/vehicle
+/mob/living/vehicle
 	name = "Vehicle"
 	desc = "Vhroom"
 
@@ -23,31 +23,33 @@
 	var/list/max_cargo = 10
 
 	var/obj/item/weapon/cell/cell
-	var/datum/effect/effect/system/spark_spread/spark_system = new
 	var/obj/item/device/radio/radio = null
 
 	//Defense
-	var/health = 300
-	var/max_health = 300
+	health = 300
+	maxHealth = 300
 	var/deflect_chance = 10 //chance to deflect the incoming projectiles, hits, or lesser the effect of ex_act.
 	//the values in this list show how much damage will pass through, not how much will be absorbed.
 	var/list/damage_absorption = list("brute"=0.8,"fire"=1.2,"bullet"=0.9,"laser"=1,"energy"=1,"bomb"=1)
 
 	var/wreckage = null //obj reference to spawn when the vehicle is destroyed.
 
-/mob/vehicle/New()
+/mob/living/vehicle/New()
 	if(max_passengers)
 		passenger_slots = new/list()
 	if(max_cargo)
 		cargo = new/list()
 	..()
 
-/mob/vehicle/proc/on_pilot_entry()
+/mob/living/vehicle/proc/on_pilot_entry()
 	open = 0
 	update_icons()
 	return
 
-/mob/vehicle/proc/can_act()
+/mob/living/vehicle/proc/on_pilot_exit()
+	return
+
+/mob/living/vehicle/proc/can_act()
 	if(!pilot) //This shouldn't happen.
 		src << "<span class='danger'>No pilot detected.</span>"
 		return 0
@@ -59,18 +61,18 @@
 		return 0
 	return 1
 
-/mob/vehicle/MouseDrop()
+/mob/living/vehicle/MouseDrop()
 	return
 
-/mob/vehicle/update_icons()
+/mob/living/vehicle/update_icons()
 	if(open)
 		icon_state = initial(icon_state)
 	else
 		icon_state = icon_closed
 
-/mob/vehicle/Del()
+/mob/living/vehicle/Del()
 	if(pilot) //Get the pilot out.
-		get_out(pilot,1)
+		get_out(src,1)
 	for(var/mob/living/M in passenger_slots) //Passengers too.
 		M.loc = get_turf(src)
 	for(var/atom/movable/A in cargo) //Finally, the cargo.
@@ -80,7 +82,7 @@
 		//TODO: Transfer attack logs, game logs, fingerprints, etc
 	..() //We can safely be deleted now.
 
-/mob/vehicle/proc/get_out(var/mob/user, var/forced = 0) //Since only the pilot can use this verb, no need to check for passengers.
+/mob/living/vehicle/proc/get_out(var/mob/user, var/forced = 0) //Since only the pilot can use this verb, no need to check for passengers.
 	if(pilot)
 		if(can_act() || forced == 1)
 			pilot.key = user.key
@@ -93,11 +95,12 @@
 			open = 1
 			sealed = 0
 			update_icons()
+			on_pilot_exit()
 			return
 	else //This should never happen.
 		user << "Your pilot mob appears to have ceased existing.  This is a bug and it's recommended to adminhelp it immediately, and make a bug report."
 
-/mob/vehicle/proc/get_out_passenger(var/mob/user)
+/mob/living/vehicle/proc/get_out_passenger(var/mob/user)
 	user.loc = get_turf(src)
 	for(user in passenger_slots)
 		passenger_slots.Remove(user)
@@ -107,7 +110,7 @@
 		update_icons()
 	user << "You climb out of \the [src]'s passenger seat."
 
-/mob/vehicle/proc/get_seat_wanted(var/mob/living/user)
+/mob/living/vehicle/proc/get_seat_wanted(var/mob/living/user)
 	if(!pilot && !isnull(passenger_slots) && passenger_slots.len < max_passengers) //Check if both are available.
 	//If both are available, let the player choose.
 		var/response = alert(user,"Would you like to enter the pilot or the passenger seat?","Seat selection","Pilot","Passenger","Cancel")
@@ -130,8 +133,8 @@
 		return 0
 
 
-/mob/vehicle/proc/get_in(var/mob/living/user, var/explicit = 0)
-	if(user.stat || user.restrained() || !isliving(user))
+/mob/living/vehicle/proc/get_in(var/mob/living/user, var/explicit = 0)
+	if(user.stat || user.restrained() || !isliving(user) || user == src)
 		return
 
 	var/response
@@ -139,6 +142,9 @@
 		response = get_seat_wanted(user)
 	else
 		response = explicit //We know what we want, don't need to ask twice.
+	if(!Adjacent(user))
+		user << "You need to be closer to get in."
+		return
 	switch(response)
 		if(0) //Full or they declined.
 			return
@@ -166,7 +172,7 @@
 			passenger_slots.Add(user)
 	user.loc = src
 
-/mob/vehicle/MouseDrop_T(mob/target, mob/user)
+/mob/living/vehicle/MouseDrop_T(mob/target, mob/user)
 	var/mob/living/M = user
 	if(user.stat || user.restrained())
 		return
@@ -175,7 +181,7 @@
 	else
 		return ..()
 
-/mob/vehicle/attack_hand(var/mob/user)
+/mob/living/vehicle/attack_hand(var/mob/user)
 	if(isliving(user))
 		if(user.loc == src) //are we inside already?
 			if(!pilot) //if there's no pilot, ask if they want to take control or to exit.
@@ -195,10 +201,10 @@
 			else
 				user << "There's no way to get inside \the [src]."
 
-/mob/vehicle/Process_Spaceslipping()
+/mob/living/vehicle/Process_Spaceslipping()
 	return
 
-/mob/vehicle/verb/eject()
+/mob/living/vehicle/verb/eject()
 	set name = "Eject Exosuit"
 	set category = "Exosuit Interface"
 //	set src = usr.loc
@@ -209,7 +215,7 @@
 	add_fingerprint(usr)
 	return
 
-/mob/vehicle/verb/swap_to_pilot()
+/mob/living/vehicle/verb/swap_to_pilot()
 	set name = "Release Controls"
 	set desc = "Relinquish controls to the vehicle, so you can adjust yourself or have someone else take control."
 	set category = "Exosuit Interface"
@@ -221,7 +227,7 @@
 		pilot.key = usr.key
 		pilot = null
 
-/mob/vehicle/verb/toggle_open()
+/mob/living/vehicle/verb/toggle_open()
 	set name = "Toggle Open/Close"
 	set desc = "Controls exterior entry port status.  The vehicle must be closed to function."
 	set category = "Exosuit Interface"
@@ -234,7 +240,7 @@
 				sealed = 0
 				src << "Disengaging seals."
 
-/mob/vehicle/verb/toggle_seals()
+/mob/living/vehicle/verb/toggle_seals()
 	set name = "Toggle Seals"
 	set desc = "Determines if the vehicle is sealed from external gases or not..  The vehicle must be closed to seal."
 	set category = "Exosuit Interface"
@@ -245,7 +251,7 @@
 		sealed = !sealed
 		src << "Toggled seals [sealed ? "on" : "off"]."
 
-/mob/vehicle/verb/toggle_lights()
+/mob/living/vehicle/verb/toggle_lights()
 	set name = "Toggle Lights"
 	set category = "Exosuit Interface"
 //	set src = usr.loc
@@ -260,7 +266,7 @@
 	src << ("Toggled lights [lights?"on":"off"].")
 	return
 
-/mob/vehicle/verb/enter()
+/mob/living/vehicle/verb/enter()
 	set name = "Enter Exosuit"
 	set category = "Exosuit Interface"
 	set src = usr.loc

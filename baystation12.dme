@@ -38,6 +38,7 @@
 #include "code\_onclick\cyborg.dm"
 #include "code\_onclick\drag_drop.dm"
 #include "code\_onclick\item_attack.dm"
+#include "code\_onclick\mecha.dm"
 #include "code\_onclick\observer.dm"
 #include "code\_onclick\other_mobs.dm"
 #include "code\_onclick\telekinesis.dm"

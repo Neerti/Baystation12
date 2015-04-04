@@ -43,12 +43,12 @@
 	return 0
 
 /proc/isvehicle(A)
-	if(istype(A, /mob/vehicle))
+	if(istype(A, /mob/living/vehicle))
 		return 1
 	return 0
 
 /proc/ismecha(A)
-	if(istype(A, /mob/vehicle/mecha))
+	if(istype(A, /mob/living/vehicle/mecha))
 		return 1
 	return 0
 

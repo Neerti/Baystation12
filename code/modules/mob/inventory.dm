@@ -7,6 +7,10 @@
 		if(isrobot(src))
 			if(src:module_active)
 				return src:module_active
+	else if(ismecha(src))
+		var/mob/living/vehicle/mecha/M = src
+		if(M.selected)
+			return M.selected
 	else
 		if(hand)	return l_hand
 		else		return r_hand
